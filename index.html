@@ -8,20 +8,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link href="bootstrap.css" rel="stylesheet">
-    <script type="text/javascript" src="script.js" ></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript">
 
-    <title>Fitspo - Instagram API App</title>
-  
+    $(document).ready(function() {
+      var tag = "fitspo";
+      var count = 16;
+      var access_token = '960620.f59def8.1e7aae81446047ee89d984d1045455de';
+      var access_parameters = {access_token:access_token};
+
+      function grabImages(access_parameters) {
+        var instagramUrl = 'https://api.instagram.com/v1/tags/' + tag + '/media/recent?callback=?&count='+ count; 
+        $.getJSON(instagramUrl, access_parameters, onDataLoaded);
+      }
+
+      function onDataLoaded(instagram_data) {
+        if(instagram_data.meta.code == 200) {
+          var photos = instagram_data.data;
+          if(photos.length > 0) {
+            for (var key in photos ) {
+              var photo = photos[key];
+              $('#target').append('<a href="' + photo.link + '" target="_blank"><img src="' + photo.images.standard_resolution.url + '"></a>');
+            } 
+          }
+            else {
+            $('#target').append("Nothing here.");
+          }
+        }
+          else {
+            var error = data.meta.error_message;
+            $('#target').append('Error: ’ + error');
+          }
+        }
+
+        grabImages(access_parameters);
+
+        // $('#reload').click(function() {
+        //   location.reload();
+        // });
+
+      });
+    
+    </script>
   </head>
   
-  <body class="container">
-  
-    <h1>Hello, world!</h1>
-
-    <div class="img-container">
-
-    </div>
-
+  <body>
+    <h1 class="container" style="padding-bottom: 15px;"><a href="javascript:location.reload()">#fitspo</a></h1>
+    <div id="target"></div>
+    <footer style="padding: 20px;"><small>Developed by <a href="http://raize.ca/">Raize.ca</a></small></footer>
   </body>
+
+  <!--   https://api.instagram.com/v1/tags/fitspo/media/recent?access_token=960620.1fb234f.08758bd3234f4933a67e307658f95eef -->
   
 </html>
